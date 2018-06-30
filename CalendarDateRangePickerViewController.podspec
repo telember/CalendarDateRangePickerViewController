@@ -25,7 +25,7 @@ This is a calendar date range picker view controller written in Swift for iOS. T
   # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'miraan' => 'miraan@triprapp.com' }
-  s.source           = { :git => 'https://github.com/tekember/CalendarDateRangePickerViewController.git', :tag => s.version.to_s }
+  s.source           = { :git => 'https://github.com/telember/CalendarDateRangePickerViewController.git', :tag => s.version.to_s }
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
   s.ios.deployment_target = '8.0'
