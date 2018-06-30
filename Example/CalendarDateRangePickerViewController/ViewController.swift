@@ -18,8 +18,9 @@ class ViewController: UIViewController {
         dateRangePickerViewController.delegate = self
         dateRangePickerViewController.minimumDate = Date()
         dateRangePickerViewController.maximumDate = Calendar.current.date(byAdding: .year, value: 2, to: Date())
-        dateRangePickerViewController.selectedStartDate = Date()
-        dateRangePickerViewController.selectedEndDate = Calendar.current.date(byAdding: .day, value: 10, to: Date())
+        //dateRangePickerViewController.selectedStartDate = Date()
+        //dateRangePickerViewController.selectedEndDate = Calendar.current.date(byAdding: .day, value: 10, to: Date())
+        dateRangePickerViewController.isSingle = true
         dateRangePickerViewController.selectedColor = UIColor.red
         dateRangePickerViewController.titleText = "Select Date Range"
         let navigationController = UINavigationController(rootViewController: dateRangePickerViewController)
@@ -29,15 +30,15 @@ class ViewController: UIViewController {
 }
 
 extension ViewController : CalendarDateRangePickerViewControllerDelegate {
-    
-    func didCancelPickingDateRange() {
-        self.navigationController?.dismiss(animated: true, completion: nil)
-    }
-    
-    func didPickDateRange(startDate: Date!, endDate: Date!) {
+    func didPickDateRange(startDate: Date, endDate: Date) {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "EEEE, MMM d, yyyy"
         label.text = dateFormatter.string(from: startDate) + " to " + dateFormatter.string(from: endDate)
+        self.navigationController?.dismiss(animated: true, completion: nil)
+    }
+    
+    
+    func didCancelPickingDateRange() {
         self.navigationController?.dismiss(animated: true, completion: nil)
     }
     

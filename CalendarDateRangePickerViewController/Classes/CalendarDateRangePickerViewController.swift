@@ -10,14 +10,14 @@ import UIKit
 
 public protocol CalendarDateRangePickerViewControllerDelegate {
     func didCancelPickingDateRange()
-    func didPickDateRange(startDate: Date!, endDate: Date!)
+    func didPickDateRange(startDate: Date, endDate: Date)
 }
 
 public class CalendarDateRangePickerViewController: UICollectionViewController {
     
     let cellReuseIdentifier = "CalendarDateRangePickerCell"
     let headerReuseIdentifier = "CalendarDateRangePickerHeaderView"
-    
+    public var isSingle: Bool = false
     public var delegate: CalendarDateRangePickerViewControllerDelegate!
     
     let itemsPerRow = 7
@@ -55,7 +55,13 @@ public class CalendarDateRangePickerViewController: UICollectionViewController {
         
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(CalendarDateRangePickerViewController.didTapCancel))
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Done", style: .done, target: self, action: #selector(CalendarDateRangePickerViewController.didTapDone))
-        self.navigationItem.rightBarButtonItem?.isEnabled = selectedStartDate != nil && selectedEndDate != nil
+        
+        if(isSingle){
+            self.navigationItem.rightBarButtonItem?.isEnabled = selectedStartDate != nil
+        }else{
+             self.navigationItem.rightBarButtonItem?.isEnabled = selectedStartDate != nil && selectedEndDate != nil
+        }
+       
     }
     
     func didTapCancel() {
@@ -63,10 +69,19 @@ public class CalendarDateRangePickerViewController: UICollectionViewController {
     }
     
     func didTapDone() {
-        if selectedStartDate == nil || selectedEndDate == nil {
-            return
+        if(isSingle){
+            if selectedStartDate != nil {
+                delegate.didPickDateRange(startDate: selectedStartDate!, endDate: selectedStartDate!)
+            }else{
+                return
+            }
+        }else{
+            if selectedStartDate != nil && selectedEndDate != nil {
+                delegate.didPickDateRange(startDate: selectedStartDate!, endDate: selectedEndDate!)
+            }else{
+                return
+            }
         }
-        delegate.didPickDateRange(startDate: selectedStartDate!, endDate: selectedEndDate!)
     }
     
 }
@@ -147,26 +162,33 @@ extension CalendarDateRangePickerViewController : UICollectionViewDelegateFlowLa
     
     override public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let cell = collectionView.cellForItem(at: indexPath) as! CalendarDateRangePickerCell
+        self.navigationItem.rightBarButtonItem?.isEnabled = false
         if cell.date == nil {
             return
         }
         if isBefore(dateA: cell.date!, dateB: minimumDate) {
             return
         }
-        if selectedStartDate == nil {
+        if(isSingle){
             selectedStartDate = cell.date
-        } else if selectedEndDate == nil {
-            if isBefore(dateA: selectedStartDate!, dateB: cell.date!) {
-                selectedEndDate = cell.date
-                self.navigationItem.rightBarButtonItem?.isEnabled = true
-            } else {
-                // If a cell before the currently selected start date is selected then just set it as the new start date
+            self.navigationItem.rightBarButtonItem?.isEnabled = true
+        }else{
+            if selectedStartDate == nil {
                 selectedStartDate = cell.date
+            } else if selectedEndDate == nil {
+                if isBefore(dateA: selectedStartDate!, dateB: cell.date!) {
+                    selectedEndDate = cell.date
+                    self.navigationItem.rightBarButtonItem?.isEnabled = true
+                } else {
+                    // If a cell before the currently selected start date is selected then just set it as the new start date
+                    selectedStartDate = cell.date
+                }
+            } else {
+                selectedStartDate = cell.date
+                selectedEndDate = nil
             }
-        } else {
-            selectedStartDate = cell.date
-            selectedEndDate = nil
         }
+        
         collectionView.reloadData()
     }
     
