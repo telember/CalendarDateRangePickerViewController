@@ -69,18 +69,13 @@ public class CalendarDateRangePickerViewController: UICollectionViewController {
     }
     
     @objc func didTapDone() {
-        if(isSingle){
-            if selectedStartDate != nil {
-                delegate.didPickDateRange(startDate: selectedStartDate!, endDate: selectedStartDate!)
-            }else{
-                return
+        if selectedStartDate != nil {
+            if selectedEndDate == nil {
+                selectedEndDate = selectedStartDate
             }
+            delegate.didPickDateRange(startDate: selectedStartDate!, endDate: selectedEndDate!)
         }else{
-            if selectedStartDate != nil && selectedEndDate != nil {
-                delegate.didPickDateRange(startDate: selectedStartDate!, endDate: selectedEndDate!)
-            }else{
-                return
-            }
+            return
         }
     }
     
@@ -134,7 +129,7 @@ extension CalendarDateRangePickerViewController {
             } else if selectedStartDate != nil && areSameDay(dateA: date, dateB: selectedStartDate!) {
                 // Cell is selected start date
                 cell.select()
-                if selectedEndDate != nil {
+                if( selectedEndDate != nil && !areSameDay(dateA: selectedEndDate!, dateB: selectedStartDate!)){
                     cell.highlightRight()
                 }
             } else if selectedEndDate != nil && areSameDay(dateA: date, dateB: selectedEndDate!) {
@@ -162,7 +157,7 @@ extension CalendarDateRangePickerViewController : UICollectionViewDelegateFlowLa
     
     override public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let cell = collectionView.cellForItem(at: indexPath) as! CalendarDateRangePickerCell
-        self.navigationItem.rightBarButtonItem?.isEnabled = false
+        self.navigationItem.rightBarButtonItem?.isEnabled = true
         if cell.date == nil {
             return
         }
@@ -170,20 +165,19 @@ extension CalendarDateRangePickerViewController : UICollectionViewDelegateFlowLa
             return
         }
         if(isSingle){
-            selectedStartDate = cell.date
-            self.navigationItem.rightBarButtonItem?.isEnabled = true
+             selectedStartDate = cell.date
         }else{
             if selectedStartDate == nil {
                 selectedStartDate = cell.date
             } else if selectedEndDate == nil {
                 if isBefore(dateA: selectedStartDate!, dateB: cell.date!) {
                     selectedEndDate = cell.date
-                    self.navigationItem.rightBarButtonItem?.isEnabled = true
                 } else {
                     // If a cell before the currently selected start date is selected then just set it as the new start date
                     selectedStartDate = cell.date
                 }
             } else {
+                self.navigationItem.rightBarButtonItem?.isEnabled = false
                 selectedStartDate = cell.date
                 selectedEndDate = nil
             }

@@ -18,9 +18,10 @@ class ViewController: UIViewController {
         dateRangePickerViewController.delegate = self
         dateRangePickerViewController.minimumDate = Date()
         dateRangePickerViewController.maximumDate = Calendar.current.date(byAdding: .year, value: 2, to: Date())
-        //dateRangePickerViewController.selectedStartDate = Date()
+        dateRangePickerViewController.selectedStartDate = Date()
+        dateRangePickerViewController.selectedEndDate = Date()
         //dateRangePickerViewController.selectedEndDate = Calendar.current.date(byAdding: .day, value: 10, to: Date())
-        dateRangePickerViewController.isSingle = true
+     
         dateRangePickerViewController.selectedColor = UIColor.red
         dateRangePickerViewController.titleText = "Select Date Range"
         let navigationController = UINavigationController(rootViewController: dateRangePickerViewController)
