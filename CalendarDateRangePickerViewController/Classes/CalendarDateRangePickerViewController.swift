@@ -177,7 +177,6 @@ extension CalendarDateRangePickerViewController : UICollectionViewDelegateFlowLa
                     selectedStartDate = cell.date
                 }
             } else {
-                self.navigationItem.rightBarButtonItem?.isEnabled = false
                 selectedStartDate = cell.date
                 selectedEndDate = nil
             }
